@@ -1,128 +1,156 @@
-🟢 Circle Detection & Tracking in Industrial Grayscale Videos
-This project performs robust circle detection and tracking in industrial black-and-white (B&W) video streams using a hybrid approach combining:
 
-🌀 Hough Circle Transform for shape-based detection
+# 🟢 Circle Detection & Tracking in Industrial Grayscale Videos
 
-🔑 ORB Feature Descriptors for matching between frames
+This project performs **robust circle detection and tracking** in black-and-white (B&W) industrial video streams using a **hybrid method** combining:
 
-🧠 Object Tracking with spatial & appearance-based consistency
+- 🌀 **Hough Circle Transform** – detects circular shapes
+- 🔑 **ORB Descriptors** – ensures frame-to-frame matching
+- 🧠 **Object Tracking** – tracks unique circle IDs
+- 📊 **CSV Logging** – exports per-frame circle counts
 
-📊 Exports per-frame circle counts and visualization
+Also includes **static image circle detection with diameter extraction** (`main.py`).
 
-It also supports static image detection with diameter extraction using main.py.
+---
 
-📽️ Demo Output
+## 📽️ Demo Output
 
 ![Tracked Output Animation](tracked_output.gif)
 
-📂 Project Structure
-bash
-Copy
-Edit
+---
+
+## 📂 Project Structure
+
+```
 .
-├── test_video.mp4                 # (your input video)
-├── pic1.jpg                       # (your input image for static detection)
-├── tracker.py                     # real-time video tracking
-├── main.py                        # static image detection & logging
-├── refined_tracked_output.mp4     # annotated video output
-├── circle_data.csv                # output for main.py (image)
-├── circle_count_per_frame.csv     # output for tracker.py (video)
+├── test_video.mp4                 # Input video (grayscale)
+├── pic1.jpg                       # Input image for static detection
+├── tracker.py                     # Real-time video circle tracking
+├── main.py                        # Static image detection + logging
+├── refined_tracked_output.mp4     # Tracked video output
+├── circle_data.csv                # Output for static image (main.py)
+├── circle_count_per_frame.csv     # Per-frame circle count (tracker.py)
 └── README.md
-✅ Features
-tracker.py – Real-Time Circle Tracking
-Assigns unique IDs to persistent circles across frames
+```
 
-Filters noise using ORB descriptors + spatial constraints
+---
 
-Ignores short-lived or inconsistent detections
+## ✅ Features
 
-Tracks only real, stable circle objects
+### `tracker.py` – Real-Time Video Circle Tracking
+- Assigns **unique IDs** to persistent circles across frames
+- Uses **ORB descriptors + spatial proximity** for robustness
+- Ignores **noisy or short-lived detections**
+- Saves:
+  - 🟢 `refined_tracked_output.mp4` – Annotated video
+  - 📊 `circle_count_per_frame.csv` – Circle count per frame
 
-Saves annotated video + per-frame circle count CSV
+### `main.py` – Static Image Detection
+- Detects all circles in an input image
+- Logs **center, radius, diameter**
+- Saves:
+  - 🟢 Annotated window
+  - 📊 `circle_data.csv` – Circle metadata table
 
-main.py – Static Image Detection
-Detects all circles from an input image
+---
 
-Calculates and logs radius and diameter
+## 🧠 How It Works
 
-Saves annotated image and outputs data to CSV
+1. 🔍 **Hough Transform** detects circular shapes.
+2. 🔑 **ORB Descriptors** are extracted from circle regions.
+3. 🧬 **BFMatcher** finds frame-to-frame descriptor similarity.
+4. 🧠 Tracks are updated only if:
+   - Spatial distance < `SPATIAL_THRESH`
+   - Descriptor distance < `DESCRIPTOR_THRESH`
+5. ⏳ Tracks seen for ≥ `MIN_PERSISTENCE` frames are retained.
 
-🧠 How It Works
-🔍 Hough Circle Detection for finding circular shapes
+---
 
-🔑 ORB descriptors are extracted from each circle region
+## 🛠️ Setup
 
-🧬 BFMatcher checks descriptor similarity between frames
+### Requirements
+- Python 3.7+
+- OpenCV
+- NumPy
+- Pandas
 
-🧠 Tracks are updated only if spatial distance and descriptor distance are within threshold
-
-⏳ Only circles seen for ≥ MIN_PERSISTENCE frames are counted
-
-🛠️ Setup
-Requirements:
-Python 3.7+
-
-OpenCV
-
-NumPy
-
-Pandas
-
-Install them:
-
-bash
-Copy
-Edit
+### Install
+```bash
 pip install opencv-python numpy pandas
-🚀 Usage
-▶ Video Circle Tracker (tracker.py)
-bash
-Copy
-Edit
+```
+
+---
+
+## 🚀 Usage
+
+### ▶ Real-Time Video Tracking
+```bash
 python tracker.py
-Outputs:
+```
+- 🔸 Input: `test_video.mp4`
+- 🔸 Output:
+  - `refined_tracked_output.mp4` – Video with circle IDs
+  - `circle_count_per_frame.csv` – Circle count per frame
 
-refined_tracked_output.mp4: Video with tracked circle IDs
-
-circle_count_per_frame.csv: Count of unique circles per frame
-
-🖼 Static Image Circle Detector (main.py)
-bash
-Copy
-Edit
+### 🖼 Static Image Circle Detection
+```bash
 python main.py
-Ensure the image path (pic1.jpg) is valid.
+```
+- 🔸 Input: `pic1.jpg`
+- 🔸 Output:
+  - Annotated circle display
+  - `circle_data.csv`
 
-Outputs:
+---
 
-Annotated display window with detected circles
+## 🏭 Real-World Industrial Applications
 
-circle_data.csv: Per-circle data including radius and diameter
+✅ **Automated Quality Control**  
+🔹 Detect flaws in gaskets, O-rings, bearings
 
-🏭 Real-World Industrial Applications
-✅ Automated Quality Control
-Detect defects in circular components (e.g., bearings, gaskets, pipe ends)
+✅ **Production Line Monitoring**  
+🔹 Track circular items on conveyor belts
 
-✅ Production Line Monitoring
-Count and inspect round items moving through conveyor belts
+✅ **Microscopic Inspection**  
+🔹 Identify circular cells, bubbles, or beads
 
-✅ Microscopic Inspection
-Detect bubbles, cell boundaries, or circular particles under microscopes
+✅ **Packaging & Label Validation**  
+🔹 Check cap alignment, bottle tops, printed logos
 
-✅ Packaging & Labeling Validation
-Ensure printed or physical circles (bottle caps, can labels) are present and aligned
+✅ **Tool Marking & Alignment Check**  
+🔹 Detect hole positions, tool paths, surface markings
 
-✅ Mechanical Process Verification
-Detect tool marks or hole placements on metallic surfaces
+---
 
-⚙️ Configuration Parameters
-Inside tracker.py, you can tune:
+## ⚙️ Configuration Parameters
 
-python
-Copy
-Edit
-SPATIAL_THRESH = 23           # max distance for spatial matching
-DESCRIPTOR_THRESH = 35        # feature similarity tolerance
-MIN_PERSISTENCE = 16          # minimum frames a circle must persist
-MAX_IDLE = 4                  # drop circle after N missed frames
-MIN_RADIUS = 10               # remove very small noisy detections
+You can tune these constants in `tracker.py`:
+
+```python
+SPATIAL_THRESH = 23
+DESCRIPTOR_THRESH = 35
+MIN_PERSISTENCE = 16
+MAX_IDLE = 4
+POSITION_AVG_WINDOW = 5
+UPDATE_DESCRIPTOR_THRESHOLD = 18
+MIN_MATCH_COUNT = 6
+MIN_RADIUS = 10
+```
+
+---
+
+## ⚠️ License
+
+This project is under a **non-commercial use only license**.  
+**Commercial, industrial, or revenue-generating use is strictly prohibited.**
+
+For academic or personal use only.  
+See `LICENSE` for full terms or contact the author for commercial licensing.
+
+---
+
+## 📧 Author
+
+**Soumya Kanti Jana**  
+Dept. of Computer Science & Engineering  
+Jalpaiguri Government Engineering College  
+Email: [soumyajana2001@gmail.com](mailto:soumyajana2001@gmail.com)
